@@ -407,6 +407,28 @@ func TestPopulateImageFields(t *testing.T) {
 	}
 }
 
+func TestPopulateImageFieldsNoImages(t *testing.T) {
+	// this package has no images
+	cleanupPackage(t, "real-package-wizard.spk")
+	p := skipIfMissingTestPackage(t, "real-package-wizard.spk")
+	err := p.populateImageFields()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if p.Thumbnail[0] != "default.png" {
+		t.Errorf("Expected 1st image to be called default.png but got %s", p.Thumbnail[0])
+	}
+
+	if strings.ToLower(p.ThumbnailRetina[0]) != "default.png" {
+		t.Errorf("Expceted retina icon called default.png but got %s", p.ThumbnailRetina[0])
+	}
+
+	if len(p.Snapshot) != 0 {
+		t.Errorf("Expcetedno screenshots but got but got %+v", p.Snapshot)
+	}
+}
+
 func TestFinished(t *testing.T) {
 	cleanupPackage(t, "real-package.spk")
 	cleanupPackage(t, "dot-slash-package.spk")
