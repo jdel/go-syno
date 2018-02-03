@@ -1,0 +1,21 @@
+language: go
+go:
+- 1.9
+install:
+- go get -v github.com/golang/dep/cmd/dep
+- go get -v github.com/codeclimate/test-reporter
+- cd $GOPATH/src/github.com/golang/dep/cmd/dep && git checkout tags/v0.4.1 && go install
+- cd $GOPATH/src/github.com/codeclimate/test-reporter && git checkout tags/v0.4.3 && go install
+- cd $GOPATH/src/github.com/jdel/go-syno && dep ensure -v -vendor-only
+before_script:
+- test-reporter before-build
+script:
+- go test -v -coverprofile c.out -coverpkg ./... -race
+after_script:
+- test-reporter after-build --coverage-input-type gocov --exit-code $TRAVIS_TEST_RESULT
+notifications:
+  slack:
+    secure: kvMUSZzoVrdmfsB17WU3gCS9lf+//v0qlgdxjqql7h3AjkpbgtBemUVh49eZE8m5riu1BBEVH+8N1KuUf2sSlAhgrVydnnMO4fw0S7jzar4YwmM5dBQldpEDoshDJ+ntdYvgHpkQYrIZ4MtxmPun9BbM71E2TqeRtnVy1OzXBfcQcUuHnusAawUTxgN5fLSJeNlDwgNnwJxwyr8OWB4ZrvhTTQ348Q4NOmkgYZWuqFDY/ss70+mVBqJZ2jtGBTV6thzcbFT94ziIXmweJbHOixl4MFKsVascc03ZAVlDYNFXE8MwKdpl7HRufF/msbaRbMVaKUMM1rKM+04d9aKrtyYU+u1iLnz9aVISXZuy7WQIsoOfpOTCTkXyAnFLKUKVRVDn/w2CYz5HFOXkiscgT45MgVK0HYswVpbuE5CWXBxD+vvQBMWcdDzCaOIoZCDWnLaqVWEyUqUwmR6238LvSTv86cT9lTeIu9cv8RoMqFq2/jU0RpXPnPeyxWdk3h7uSy/usuqd6aBi5CZFNv3BOZSxFXPkbGZ8oLsmsz7K1rmDXSuDEz0I9CmS4HC/UM0rOVu4zzLJ6xRG+xJ2eWClS898liH4Rqs8/Njb3Gn6m2OFsUYA4mutlDVPUs2s68FoRW4OwzGiFcl4KVkZp9e6hI1wUYAr26OxJnWy874s6h8=
+env:
+  global:
+    - secure: QTyGWhQB4Kr2FSanfTt3pceA09e81mPTwO5WSdNHKnJ7eGfAW+m3TSZGukK+An9vogSw6iGIrMvl15FugtYvEYCCuuKU9W6a58+6ZqVlonfkbEYz2zTKsLZ3BWfCg1MQyOr1EdNrLN3M35CkWcivDO1BWJH6L2kCuczirScdjak8rx22fNQj397uJni96g1SJNdOXtG6n4XYI2iqzi9OA0SpRcmWHdtrmjatnfAOa+6/I+rMuN6NOTUlSGwqbsleD+VYkcvB4+8QLbI/uMIdufCRS6wfTyVGwROQ5wVySYBSGPsQJvD8J7vETbKsAgb6hloZpDfG8e3u372UwS0IdeG4jBcKZrqSVCSK7a6zGPVXIfSF7enRRC7ZsOSYFv3mydlHJpGNlms45gyfMg+KAWWMtljOHfuFV8GQloYo9wCPgekIHk+U0qsDvbvg6Rba6dkL5XTy+IE4Offa2LxzM/HjhfXChnH/VH1LAg20wvaJANVvIaUgjgaNpnkYVOy6T3QfL4ykOcED2pHAOY4/B62KyFn8On6DcrHha3aL/FYRYKHwYZ7r1vY6QD6OLoDf/F4QSdrg0764QMsU6GjSVpgy3pqcV0GPp3uXZq1RUx53P/r4MgmAD7hGPQO60RpUuS589jcg3XEWsbAk/FydEo9lfdBA4nUBUYAAERhPAT8=
