@@ -194,14 +194,6 @@ func (p *Package) populateImageFields() error {
 	p.Thumbnail = sliceOfStringsItemMatches(extractedImages, "(?i)(_thumb_[0-9]+|_icon.*).png$")
 	p.ThumbnailRetina = sliceOfStringsItemMatches(extractedImages, "(?i)(_thumb_256|_icon_256).png$")
 	p.Snapshot = sliceOfStringsItemMatches(extractedImages, "(?i)_screen_[0-9]+.png$$")
-
-	if len(p.Thumbnail) == 0 {
-		p.Thumbnail = append(p.Thumbnail, "default.png")
-	}
-	if len(p.ThumbnailRetina) == 0 {
-		p.ThumbnailRetina = append(p.ThumbnailRetina, "default.png")
-	}
-
 	return err
 }
 

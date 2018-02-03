@@ -416,16 +416,16 @@ func TestPopulateImageFieldsNoImages(t *testing.T) {
 		t.Error(err)
 	}
 
-	if p.Thumbnail[0] != "default.png" {
-		t.Errorf("Expected 1st image to be called default.png but got %s", p.Thumbnail[0])
+	if l := len(p.Thumbnail); l != 0 {
+		t.Errorf("Expected no icon but got %d", l)
 	}
 
-	if strings.ToLower(p.ThumbnailRetina[0]) != "default.png" {
-		t.Errorf("Expceted retina icon called default.png but got %s", p.ThumbnailRetina[0])
+	if l := len(p.ThumbnailRetina); l != 0 {
+		t.Errorf("Expceted no retina icon but got %d", l)
 	}
 
-	if len(p.Snapshot) != 0 {
-		t.Errorf("Expcetedno screenshots but got but got %+v", p.Snapshot)
+	if l := len(p.Snapshot); l != 0 {
+		t.Errorf("Expcetedno screenshots but got but got %d", l)
 	}
 }
 
