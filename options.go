@@ -13,7 +13,7 @@ var LogPanicLevel = func() log.Level { return log.PanicLevel }()
 // LogFatalLevel is a shorthand for logrus.FatalLevel
 var LogFatalLevel = func() log.Level { return log.FatalLevel }()
 
-// LogErrorLevel is a shorthand for logrus.PaniErrorLevelcLevel
+// LogErrorLevel is a shorthand for logrus.ErrorLevel
 var LogErrorLevel = func() log.Level { return log.ErrorLevel }()
 
 // LogWarnLevel is a shorthand for logrus.WarnLevel

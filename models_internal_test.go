@@ -48,7 +48,7 @@ func TestModelsGetFromFileReadError(t *testing.T) {
 		t.Error(err)
 	}
 	if err := os.RemoveAll(o.ModelsFile); err != nil {
-		t.Skipf("Could not create file %s to prepare for test", o.ModelsFile)
+		t.Skipf("Could not delete file %s to prepare for test", o.ModelsFile)
 	}
 	if _, err := getModelsFromModelsFile(); err == nil {
 		t.Error("Expected a read error")
