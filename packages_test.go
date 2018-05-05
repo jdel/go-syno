@@ -221,19 +221,15 @@ func TestFilterByArch(t *testing.T) {
 
 func TestFilterByFirmware(t *testing.T) {
 	pp := syno.Packages{p1, p2}
-	ppf := pp.FilterByFirmware("2.0")
+	ppf := pp.FilterByFirmware("6.1")
 	if len(ppf) != 2 {
 		t.Errorf("Expected 2 packages to match but got %+v", ppf)
 	}
-	ppf = pp.FilterByFirmware("3.1")
+	ppf = pp.FilterByFirmware("4.2")
 	if len(ppf) != 1 {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
-	ppf = pp.FilterByFirmware("6.1")
-	if len(ppf) != 1 {
-		t.Errorf("Expected 1 packages to match but got %+v", ppf)
-	}
-	ppf = pp.FilterByFirmware("9.0")
+	ppf = pp.FilterByFirmware("2.0")
 	if len(ppf) != 0 {
 		t.Errorf("Expected 0 packages to match but got %+v", ppf)
 	}
