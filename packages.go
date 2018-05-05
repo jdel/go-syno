@@ -67,7 +67,7 @@ func (p Packages) FilterByArch(query string) Packages {
 func (p Packages) FilterByFirmware(query string) Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
-		if synoPkg.Firmware >= query {
+		if synoPkg.Firmware <= query {
 			output = append(output, synoPkg)
 		}
 	}
