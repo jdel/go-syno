@@ -101,7 +101,7 @@ func getModelsFromModelsFile() (Models, error) {
 // CrawlModels fetches Synology models from
 // The official Synology wiki
 func getModelsFromInternet() (Models, error) {
-	resp, err := http.Get("https://www.synology.com/api/knowledgebase/findDocByUri?uri=DSM/tutorial/General/What_kind_of_CPU_does_my_NAS_have&lang=en-global&p_type=DSM&d_type=tutorial")
+	resp, err := http.Get("https://www.synology.com/api/knowledgebase/findDocByUri?uri=DSM%2Ftutorial%2FCompatibility_Peripherals%2FWhat_kind_of_CPU_does_my_NAS_have&lang=en-global&p_type=DSM&d_type=tutorial")
 	if err != nil && resp != nil && resp.StatusCode != 200 && resp.StatusCode != 302 {
 		return nil, err
 	}
