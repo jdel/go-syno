@@ -1,21 +1,28 @@
 language: go
 go:
-- 1.9
+- 1.13
+before_install:
+- curl -sSL https://codeclimate.com/downloads/test-reporter/test-reporter-0.6.3-linux-amd64 -o ${GOPATH}/bin/test-reporter
+- chmod +x ${GOPATH}/bin/test-reporter
+- go get -v 4d63.com/vangen
 install:
-- go get -v github.com/golang/dep/cmd/dep
-- go get -v github.com/codeclimate/test-reporter
-- cd $GOPATH/src/github.com/golang/dep/cmd/dep && git checkout tags/v0.4.1 && go install
-- cd $GOPATH/src/github.com/codeclimate/test-reporter && git checkout tags/v0.4.3 && go install
-- cd $GOPATH/src/github.com/jdel/go-syno && dep ensure -v -vendor-only
+- go get -v ./...
 before_script:
 - test-reporter before-build
 script:
 - go test -v -coverprofile c.out -coverpkg ./... -race
 after_script:
-- test-reporter after-build --coverage-input-type gocov --exit-code $TRAVIS_TEST_RESULT
+- test-reporter after-build --coverage-input-type gocov --prefix jdel.org/go-syno --exit-code ${TRAVIS_TEST_RESULT}
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: bash scripts/vangen.sh
+  on:
+    branch: master
 notifications:
   slack:
     secure: kvMUSZzoVrdmfsB17WU3gCS9lf+//v0qlgdxjqql7h3AjkpbgtBemUVh49eZE8m5riu1BBEVH+8N1KuUf2sSlAhgrVydnnMO4fw0S7jzar4YwmM5dBQldpEDoshDJ+ntdYvgHpkQYrIZ4MtxmPun9BbM71E2TqeRtnVy1OzXBfcQcUuHnusAawUTxgN5fLSJeNlDwgNnwJxwyr8OWB4ZrvhTTQ348Q4NOmkgYZWuqFDY/ss70+mVBqJZ2jtGBTV6thzcbFT94ziIXmweJbHOixl4MFKsVascc03ZAVlDYNFXE8MwKdpl7HRufF/msbaRbMVaKUMM1rKM+04d9aKrtyYU+u1iLnz9aVISXZuy7WQIsoOfpOTCTkXyAnFLKUKVRVDn/w2CYz5HFOXkiscgT45MgVK0HYswVpbuE5CWXBxD+vvQBMWcdDzCaOIoZCDWnLaqVWEyUqUwmR6238LvSTv86cT9lTeIu9cv8RoMqFq2/jU0RpXPnPeyxWdk3h7uSy/usuqd6aBi5CZFNv3BOZSxFXPkbGZ8oLsmsz7K1rmDXSuDEz0I9CmS4HC/UM0rOVu4zzLJ6xRG+xJ2eWClS898liH4Rqs8/Njb3Gn6m2OFsUYA4mutlDVPUs2s68FoRW4OwzGiFcl4KVkZp9e6hI1wUYAr26OxJnWy874s6h8=
 env:
   global:
     - secure: T3bgZ27ZQhMluicNOmiC68j398BxeVv5iKdLJU/IXGZHDv/v1CS+TdYHJWDNCwO2wF9I4N/jpGtGIxNhgutHDrmhgYF8PPhi02MHR5buJ1kjmZl4fn/HBA36ssSkHmiiiOzndBU+snNjRcT6RVVSKnmw4SyZzWEGzf1OeeuVLwUb08Dva377k7MzqM2VyC3SlL5D+pU9DZBJ30ZSVVg1peUWIOztLSD520A5bh/vFSAQyLl3vOO9u1BcrsGe01JyFq4XWPROHUZh+09MLdjtBSDGfB4FsOLR6OpCijLwBqGDFOHlFYIbXNnCe9HT3+Hp8ae4LYUy/K04uwC8T9YhG3t/UeXnbrqJwib5McmgR1fXnI2EbmCvWXyG91DyObSIAdeYbirGevcO56+73FSzXGC6WJxdgKc1R/4buKrfZlbA045EXyb/2nSAe9ZDdegKbf1R3pY5aP5yY80VK+YLBWNhaxBBbEiUAiSAzjIuCQIaURBhRQW4U/VpHaU7+w6Sw9j9EmpIHKJ7X2kU+XY91SGfZ9haFppoGENmP5LbUSYlGoZCTdiZ5ntj/IXg+Wmvz0mK+bCXgpzjGT3HC2pph2fnNIl13Bty0QRx3vL1bpOv3EckEPe8xRWoApp81F6CZv+IO/V6qk6gT2Jl/cKG7/cbVK7ILSg9c4Kt1XxIqG0=
+    - secure: 3RbOFYbdUUSu+wO6YkR1OPVgrO7wh3ZUJxT0lNOEyekw1x9LO42jabXO+ZZs+poGOrxA4ZVGOaYiDjW3/v99uJ+aeo382mgbJIVYcPzvSQTCgcfN7g9OSiKB7M+XG1ACviGF6rAHciljuApPNmudhiFhQLhoGYTonwoT9PKz3tY+W9RKQ+gyzwDeUG1hz0tRI7h2YE5OmolgbOZ04NOqZq5qVcBnfNjRx5UI/JDfyCKEU5b6Ph6MfGf0ozrpcF8NolOJObtK5tJ/+Gc9d6JrIigCVwF7h7DGLesibkTfajJx6pB8XslJae1sl0V9MRvMc68QmUbpjLmkKwN03mgI4HAcF0wuWOW3Ws0xil7ANvlz6n2P1SNi0oLsFkbSBaCETB40r6ifYLJBIkbA6s2QVirr+LB8VpcmcsK2EDDO6m5akxHrAb/MV44YUIA7b3x7DCAvjfrWCePf7BVo3VAZy1gDgd5/jFXO6IpQz1SvNls6FL4vcdQqsuyjpZWMleLJkvUqcB/kmLJZ7TQQkP7yjDNrXVKS/KlDeYiP3+gVr6N+q8bXd5W9e7ELH06eyFbitKAgO3CDrQZrynOzxKohAaL7h8pVQDThY6jVRhJdu9h9tEAhFJ4PK6S2m5PoenaF7mUSFtf/ImcO9/iFnPQM0NTE7qsAsS9q/ySZM1xjl/Y=

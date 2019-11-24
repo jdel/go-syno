@@ -1,10 +1,10 @@
-package syno_test
+package syno_test // import jdel.org/go-syno/syno_test
 
 import (
 	"os"
 	"path/filepath"
 
-	syno "github.com/jdel/go-syno"
+	syno "jdel.org/go-syno"
 )
 
 var testRoot string

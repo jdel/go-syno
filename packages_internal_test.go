@@ -1,4 +1,4 @@
-package syno
+package syno // import jdel.org/go-syno/syno
 
 import (
 	"fmt"

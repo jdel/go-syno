@@ -1,4 +1,4 @@
-package syno
+package syno // import jdel.org/go-syno/syno
 
 import "errors"
 
@@ -21,7 +21,7 @@ type Package struct {
 	Distributor               string `json:"distributor,omitempty"`
 	DistributorURL            string `json:"distributor_url,omitempty"`
 	SupportURL                string `json:"support_url,omitempty"`
-	SupportCenter             string `json:"support_center, omitempty"`
+	SupportCenter             string `json:"support_center,omitempty"`
 	Model                     string `json:"model,omitempty"`
 	ExcludeArch               string `json:"exclude_arch,omitempty"` //maybe handle that ?
 	Checksum                  string `json:"checksum,omitempty"`

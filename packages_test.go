@@ -1,4 +1,4 @@
-package syno_test
+package syno_test // import jdel.org/go-syno/syno_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"sort"
 	"testing"
 
-	syno "github.com/jdel/go-syno"
+	syno "jdel.org/go-syno"
 )
 
 var pX8664,

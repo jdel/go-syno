@@ -1,11 +1,11 @@
-package syno_test
+package syno_test // import jdel.org/go-syno/syno_test
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
 
-	syno "github.com/jdel/go-syno"
+	syno "jdel.org/go-syno"
 	log "github.com/sirupsen/logrus"
 )
 
