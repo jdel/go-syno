@@ -56,7 +56,7 @@ func (p Packages) FilterByArch(query string) Packages {
 	output := Packages{}
 
 	for _, synoPkg := range p {
-		if synoPkg.Arch == query || synoPkg.familyOrArchMatch(query) || synoPkg.Arch == "noarch" {
+		if synoPkg.Arch == query || sliceOfStringsContains(strings.Fields(synoPkg.Arch), query) || synoPkg.familyOrArchMatch(query) || synoPkg.Arch == "noarch" {
 			output = append(output, synoPkg)
 		}
 	}

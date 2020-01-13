@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"testing"
 
 	syno "jdel.org/go-syno"
@@ -16,6 +17,7 @@ var pX8664,
 	pCedarview3,
 	pX86,
 	pEvansport,
+	pMulti,
 	p1,
 	p2 *syno.Package
 
@@ -54,6 +56,12 @@ func init() {
 		Name:        "cedarview-package",
 		DisplayName: "Cedarview Package 3",
 		Arch:        "cedarview",
+		Version:     "1.1",
+	}
+	pMulti = &syno.Package{
+		Name:        "multi-arch-package",
+		DisplayName: "Multi Arch Package",
+		Arch:        "x86_64 apollolake broadwell",
 		Version:     "1.1",
 	}
 	pX86 = &syno.Package{
@@ -216,6 +224,17 @@ func TestFilterByArch(t *testing.T) {
 	ppf = pp.FilterByArch("evansport")
 	if len(ppf) != 3 {
 		t.Errorf("Expected 3 packages to match but got %+v", ppf)
+	}
+}
+
+func TestFilterByArchMulti(t *testing.T) {
+	pp := syno.Packages{pMulti}
+	archs := strings.Fields(pMulti.Arch)
+	for _, arch := range archs {
+		ppf := pp.FilterByArch(arch)
+		if len(ppf) != 1 {
+			t.Errorf("Expected 1 package to match %q but got %+v", arch, ppf)
+		}
 	}
 }
 
