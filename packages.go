@@ -102,10 +102,12 @@ func (p Packages) SearchByName(query string) Packages {
 func (p Packages) OnlyShowLastVersion() Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
-		if pkgIndex, err := output.index(synoPkg.Name, synoPkg.Arch); err == nil && synoPkg.Version > output[pkgIndex].Version {
-			output[pkgIndex] = synoPkg
-		} else {
+		if pkgIndex, err := output.index(synoPkg.Name, synoPkg.Arch); err != nil {
+			// Not found
 			output = append(output, synoPkg)
+		} else if synoPkg.Version > output[pkgIndex].Version {
+			// Newer, overwrite
+			output[pkgIndex] = synoPkg
 		}
 	}
 	return output

@@ -281,9 +281,17 @@ func TestFilterByName(t *testing.T) {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
 }
+
 func TestOnlyShowLastVersion(t *testing.T) {
 	pp := syno.Packages{pCedarview2, pCedarview3}
 	ppf := pp.OnlyShowLastVersion()
+	if len(ppf) != 1 {
+		t.Errorf("Expected 1 packages to match but got %+v", ppf)
+	}
+
+	// Also when they are in the reverse order
+	pp = syno.Packages{pCedarview3, pCedarview2}
+	ppf = pp.OnlyShowLastVersion()
 	if len(ppf) != 1 {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
