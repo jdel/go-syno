@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/calmh/versions"
 	ini "gopkg.in/ini.v1"
 )
 
@@ -105,7 +106,7 @@ func (p Packages) OnlyShowLastVersion() Packages {
 		if pkgIndex, err := output.index(synoPkg.Name, synoPkg.Arch); err != nil {
 			// Not found
 			output = append(output, synoPkg)
-		} else if synoPkg.Version > output[pkgIndex].Version {
+		} else if versions.Compare(synoPkg.Version, output[pkgIndex].Version) > 0 {
 			// Newer, overwrite
 			output[pkgIndex] = synoPkg
 		}
