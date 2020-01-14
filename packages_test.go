@@ -15,6 +15,7 @@ var pX8664,
 	pCedarview1,
 	pCedarview2,
 	pCedarview3,
+	pCedarview4,
 	pX86,
 	pEvansport,
 	pMulti,
@@ -56,7 +57,13 @@ func init() {
 		Name:        "cedarview-package",
 		DisplayName: "Cedarview Package 3",
 		Arch:        "cedarview",
-		Version:     "1.1",
+		Version:     "1.2",
+	}
+	pCedarview4 = &syno.Package{
+		Name:        "cedarview-package",
+		DisplayName: "Cedarview Package 3",
+		Arch:        "cedarview",
+		Version:     "1.10.banana-4",
 	}
 	pMulti = &syno.Package{
 		Name:        "multi-arch-package",
@@ -281,11 +288,23 @@ func TestFilterByName(t *testing.T) {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
 }
+
 func TestOnlyShowLastVersion(t *testing.T) {
-	pp := syno.Packages{pCedarview2, pCedarview3}
+	pp := syno.Packages{pCedarview2, pCedarview3, pCedarview4}
 	ppf := pp.OnlyShowLastVersion()
 	if len(ppf) != 1 {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
+	} else if ppf[0].Version != pCedarview4.Version {
+		t.Errorf("Expected version %s but got %s", pCedarview4.Version, ppf[0].Version)
+	}
+
+	// Also when they are in the reverse order
+	pp = syno.Packages{pCedarview4, pCedarview3, pCedarview2}
+	ppf = pp.OnlyShowLastVersion()
+	if len(ppf) != 1 {
+		t.Errorf("Expected 1 packages to match but got %+v", ppf)
+	} else if ppf[0].Version != pCedarview4.Version {
+		t.Errorf("Expected version %s but got %s", pCedarview4.Version, ppf[0].Version)
 	}
 }
 
