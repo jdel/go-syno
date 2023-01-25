@@ -79,7 +79,7 @@ func (p Packages) FilterByFirmware(query string) Packages {
 func (p Packages) FilterOutBeta() Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
-		if synoPkg.Beta == false {
+		if !synoPkg.Beta {
 			output = append(output, synoPkg)
 		}
 	}
@@ -232,6 +232,6 @@ func archIsInFamilyAndMatches(arch, query string) bool {
 	return false
 }
 
-func (p Package) familyOrArchMatch(query string) bool {
+func (p *Package) familyOrArchMatch(query string) bool {
 	return archIsInFamilyAndMatches(p.Arch, query) || archIsInFamilyAndMatches(query, p.Arch)
 }

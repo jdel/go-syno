@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -21,10 +20,10 @@ func (p *Package) containsFiles(fileNamePattern string) (bool, error) {
 	var spkFile *os.File
 
 	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.fileName))
-	defer spkFile.Close()
 	if err != nil {
 		return false, err
 	}
+	defer spkFile.Close()
 
 	tarReader := tar.NewReader(spkFile)
 
@@ -49,10 +48,10 @@ func (p *Package) extractFiles(fileNamePattern string) ([]string, error) {
 	var extractedFiles []string
 
 	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.fileName))
-	defer spkFile.Close()
 	if err != nil {
 		return extractedFiles, err
 	}
+	defer spkFile.Close()
 
 	tarReader := tar.NewReader(spkFile)
 
@@ -113,7 +112,7 @@ func (p *Package) extractInfo() error {
 		if err := os.Rename(filepath.Join(o.PackagesDir, p.fileName), fmt.Sprintf("%s.ignored", filepath.Join(o.PackagesDir, p.fileName))); err != nil {
 			return err
 		}
-		return fmt.Errorf("Quatantined %s: No INFO or not a tar file", p.fileName)
+		return fmt.Errorf("quatantined %s: No INFO or not a tar file", p.fileName)
 	}
 	return nil
 }
@@ -133,11 +132,11 @@ func (p *Package) getOrExtractInfo() (string, error) {
 func (p *Package) parseInfo() (*ini.File, error) {
 	spkinfoFilePath, err := p.getOrExtractInfo()
 	if err != nil {
-		return nil, fmt.Errorf("Cannot extract INFO for %s: %s", p.fileName, err)
+		return nil, fmt.Errorf("cannot extract INFO for %s: %s", p.fileName, err)
 	}
 	infoINI, err := ini.InsensitiveLoad(spkinfoFilePath)
 	if err != nil {
-		return nil, fmt.Errorf("Cannot read INFO for %s: %s", p.fileName, err)
+		return nil, fmt.Errorf("cannot read INFO for %s: %s", p.fileName, err)
 	}
 	infoINI.BlockMode = false
 	return infoINI, nil
@@ -154,10 +153,10 @@ func (p *Package) extractImages() ([]string, error) {
 
 func (p *Package) getImages() ([]string, error) {
 	var err error
-	var files []os.FileInfo
+	var files []os.DirEntry
 	var images []string
 
-	files, err = ioutil.ReadDir(filepath.Join(o.CacheDir, p.fileName))
+	files, err = os.ReadDir(filepath.Join(o.CacheDir, p.fileName))
 	if err != nil {
 		return nil, err
 	}

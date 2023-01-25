@@ -43,6 +43,9 @@ func trimDotSlash(s string) string {
 func writeToFile(r io.Reader, f string, m os.FileMode) error {
 	os.MkdirAll(filepath.Dir(f), m)
 	outputFile, err := os.OpenFile(f, os.O_CREATE|os.O_WRONLY, m)
+	if err != nil {
+		return err
+	}
 	defer outputFile.Close()
 	_, err = io.Copy(outputFile, r)
 	return err

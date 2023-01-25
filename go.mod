@@ -1,16 +1,20 @@
 module jdel.org/go-syno
 
-go 1.13
+go 1.19
 
 require (
-	github.com/PuerkitoBio/goquery v1.5.0
-	github.com/andybalholm/cascadia v1.1.0 // indirect
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/calmh/versions v1.0.1
-	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/sirupsen/logrus v1.4.2
-	github.com/smartystreets/goconvey v1.6.4 // indirect
-	golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933 // indirect
-	golang.org/x/sys v0.0.0-20191128015809-6d18c012aee9 // indirect
-	gopkg.in/ini.v1 v1.51.0
-	gopkg.in/yaml.v2 v2.2.7
+	github.com/robertkrimen/otto v0.2.1
+	github.com/sirupsen/logrus v1.9.0
+	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/yaml.v2 v2.4.0
+)
+
+require (
+	github.com/andybalholm/cascadia v1.3.1 // indirect
+	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
+	gopkg.in/sourcemap.v1 v1.0.5 // indirect
 )
