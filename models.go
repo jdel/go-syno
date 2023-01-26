@@ -1,12 +1,13 @@
 package syno // import jdel.org/go-syno/syno
 
 import (
-	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/robertkrimen/otto"
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -70,7 +71,7 @@ func (m Models) SaveModelsFile() error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(o.ModelsFile, yamlModels, 0755)
+	err = os.WriteFile(o.ModelsFile, yamlModels, 0755)
 	if err != nil {
 		return err
 	}
@@ -87,7 +88,7 @@ func modelsFileExists() bool {
 
 func getModelsFromModelsFile() (Models, error) {
 	var models Models
-	bytes, err := ioutil.ReadFile(o.ModelsFile)
+	bytes, err := os.ReadFile(o.ModelsFile)
 	if err != nil {
 		return nil, err
 	}
@@ -98,22 +99,45 @@ func getModelsFromModelsFile() (Models, error) {
 	return models, nil
 }
 
-// CrawlModels fetches Synology models from
-// The official Synology wiki
+// getModelsFromInternet fetches Synology models from
+// The official Synology kb
 func getModelsFromInternet() (Models, error) {
-	resp, err := http.Get("https://www.synology.com/api/knowledgebase/findDocByUri?uri=DSM%2Ftutorial%2FCompatibility_Peripherals%2FWhat_kind_of_CPU_does_my_NAS_have&lang=en-global&p_type=DSM&d_type=tutorial")
+	resp, err := http.Get("https://kb.synology.com/en-me/DSM/tutorial/What_kind_of_CPU_does_my_NAS_have")
 	if err != nil && resp != nil && resp.StatusCode != 200 && resp.StatusCode != 302 {
 		return nil, err
 	}
 
-	doc, err := goquery.NewDocumentFromResponse(resp)
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	// All the html we want is embedded in the last <script> tag
+	var lastDeferedScript string
+	doc.Find("script[defer]").Each(func(i int, s *goquery.Selection) {
+		lastDeferedScript = s.Text()
+	})
+
+	// Extract the content capture group
+	r := regexp.MustCompile(`"content":"(.*)","tags"`)
+	match := r.FindStringSubmatch(lastDeferedScript)[1]
+
+	// Let otto handle the double quoted JS from content
+	vm := otto.New()
+	inlineHtml, err := vm.Run(`"` + match + `"`)
+	if err != nil {
+		return nil, err
+	}
+
+	// New sub document to parse inline HTML
+	subDoc, err := goquery.NewDocumentFromReader(strings.NewReader(inlineHtml.String()))
 	if err != nil {
 		return nil, err
 	}
 
 	var models Models
 
-	doc.Find("tr").Each(func(i int, s *goquery.Selection) {
+	subDoc.Find("tr").Each(func(i int, s *goquery.Selection) {
 		tds := s.ChildrenFiltered("td")
 		if tds.Size() == 7 {
 			model := &Model{

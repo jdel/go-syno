@@ -27,3 +27,5 @@ _testmain.go
 
 # go-syno diretories
 vendor
+coverage.out
+

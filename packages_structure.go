@@ -100,7 +100,7 @@ func (p Packages) Swap(i, j int) {
 func (p Packages) index(name, arch string) (int, error) {
 	returnIndex := 0
 	var err error
-	err = errors.New("Does not exist")
+	err = errors.New("does not exist")
 
 	for index, synoPkg := range p {
 		if synoPkg.Name == name && synoPkg.Arch == arch {
