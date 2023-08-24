@@ -1,21 +1,25 @@
 package syno // import jdel.org/go-syno/syno
 
-import "errors"
+import (
+	"errors"
+)
 
 // Package represents a Synology package
 type Package struct {
 	fileName string
 	// Mandatory fields
-	Name             string `json:"package,omitempty"`
-	DisplayName      string `json:"dname,omitempty"`
-	Version          string `json:"version,omitempty"`
-	Firmware         string `json:"firmware,omitempty"` // Replaced by OsMinimumVersion after 6.1-14715
-	OSMinimumVersion string `json:"os_min_ver,omitempty"`
-	Description      string `json:"desc,omitempty"`
-	Arch             string `json:"arch,omitempty"`
-	Maintainer       string `json:"maintainer,omitempty"`
-	PackageIcon      string `json:"package_icon,omitempty"`
-	PackageIcon256   string `json:"package_icon_256,omitempty"`
+	Name             string            `json:"package,omitempty"`
+	DisplayName      string            `json:"dname,omitempty"`
+	I18nDisplayNames map[string]string `json:"i18n_dnames,omitempty"`
+	Version          string            `json:"version,omitempty"`
+	Firmware         string            `json:"firmware,omitempty"` // Replaced by OsMinimumVersion after 6.1-14715
+	OSMinimumVersion string            `json:"os_min_ver,omitempty"`
+	Description      string            `json:"desc,omitempty"`
+	I18nDescriptions map[string]string `json:"i18n_desc,omitempty"`
+	Arch             string            `json:"arch,omitempty"`
+	Maintainer       string            `json:"maintainer,omitempty"`
+	PackageIcon      string            `json:"package_icon,omitempty"`
+	PackageIcon256   string            `json:"package_icon_256,omitempty"`
 	// Optional fields
 	MaintainerURL             string `json:"maintainer_url,omitempty"`
 	Distributor               string `json:"distributor,omitempty"`

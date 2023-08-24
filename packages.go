@@ -14,6 +14,8 @@ func NewPackage(synoPackageName string) (*Package, error) {
 	var err error
 	synoPkg := Package{}
 	synoPkg.fileName = synoPackageName
+	synoPkg.I18nDisplayNames = make(map[string]string)
+	synoPkg.I18nDescriptions = make(map[string]string)
 	synoPkg.Thumbnail = make([]string, 0)
 	synoPkg.ThumbnailRetina = make([]string, 0)
 	synoPkg.Snapshot = make([]string, 0)
@@ -182,13 +184,28 @@ func (p *Package) populateQFields(infoINI *ini.File) {
 
 func (p *Package) populateI18nFields(infoINI *ini.File) {
 	p.DisplayName = infoINI.Section("").Key("displayname").Value()
+	p.Description = infoINI.Section("").Key("description").Value()
+	p.I18nDisplayNames["enu"] = p.DisplayName
+	p.I18nDescriptions["enu"] = p.Description
+
 	if value := infoINI.Section("").Key(fmt.Sprintf("displayname_%s", o.Language)).Value(); value != "" {
 		p.DisplayName = value
 	}
-
-	p.Description = infoINI.Section("").Key("description").Value()
 	if value := infoINI.Section("").Key(fmt.Sprintf("description_%s", o.Language)).Value(); value != "" {
 		p.Description = value
+	}
+
+	for _, k := range infoINI.Section("").KeyStrings() {
+		if len(k) == 15 {
+			if value := infoINI.Section("").Key(k).Value(); value != "" {
+				if k[0:12] == "displayname_" {
+					p.I18nDisplayNames[k[12:15]] = infoINI.Section("").Key(k).Value()
+				}
+				if k[0:12] == "description_" {
+					p.I18nDescriptions[k[12:15]] = infoINI.Section("").Key(k).Value()
+				}
+			}
+		}
 	}
 }
 

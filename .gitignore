@@ -27,5 +27,7 @@ _testmain.go
 
 # go-syno diretories
 vendor
-coverage.out
-
+c.out
+test-results-*
+html
+vangen.json

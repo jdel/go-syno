@@ -123,10 +123,36 @@ func TestRealPackageI18n(t *testing.T) {
 	cleanupPackage(t, "real-package.spk")
 	var p *syno.Package
 	var err error
+
 	previousLanguage := o.Language
 	defer func() {
 		o.Language = previousLanguage
 	}()
+
+	// Test first with default enu language
+	if p, err = syno.NewPackage("real-package-i18n.spk"); err != nil {
+		t.Error("Package real-package-i18n.spk should exist in tests/packages")
+	}
+	if p.DisplayName != "Real Package" {
+		t.Errorf("Display Name should be Real Package but got %s", p.DisplayName)
+	}
+	if p.Description != "A Real Package" {
+		t.Errorf("Description should be A Real Package but got %s", p.Description)
+	}
+	if p.I18nDisplayNames["enu"] != "Real Package" {
+		t.Errorf("Display Name ENU should be Real Package but got %s", p.I18nDisplayNames["enu"])
+	}
+	if p.I18nDescriptions["enu"] != "A Real Package" {
+		t.Errorf("Description ENU should be A Real Package but got %s", p.I18nDescriptions["enu"])
+	}
+	if p.I18nDisplayNames["ita"] != "Real Package (ITA)" {
+		t.Errorf("Display Name ITA should be Real Package (ITA) but got %s", p.I18nDisplayNames["ita"])
+	}
+	if p.I18nDescriptions["ita"] != "A Real Package (ITA)" {
+		t.Errorf("Description ITA should be A Real Package (ITA) but got %s", p.I18nDescriptions["ita"])
+	}
+
+	// Test with default italian
 	o.Language = "ita"
 	if p, err = syno.NewPackage("real-package-i18n.spk"); err != nil {
 		t.Error("Package real-package-i18n.spk should exist in tests/packages")
@@ -136,6 +162,18 @@ func TestRealPackageI18n(t *testing.T) {
 	}
 	if p.Description != "A Real Package (ITA)" {
 		t.Errorf("Description should be A Real Package (ITA) but got %s", p.Description)
+	}
+	if p.I18nDisplayNames["enu"] != "Real Package" {
+		t.Errorf("Display Name ENU should be Real Package but got %s", p.I18nDisplayNames["enu"])
+	}
+	if p.I18nDescriptions["enu"] != "A Real Package" {
+		t.Errorf("Description ENU should be A Real Package but got %s", p.I18nDescriptions["enu"])
+	}
+	if p.I18nDisplayNames["ita"] != "Real Package (ITA)" {
+		t.Errorf("Display Name ITA should be Real Package (ITA) but got %s", p.I18nDisplayNames["ita"])
+	}
+	if p.I18nDescriptions["ita"] != "A Real Package (ITA)" {
+		t.Errorf("Description ITA should be A Real Package (ITA) but got %s", p.I18nDescriptions["ita"])
 	}
 }
 

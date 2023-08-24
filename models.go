@@ -8,7 +8,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/robertkrimen/otto"
-	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -43,10 +42,8 @@ func init() {
 // GetModels returns Synology models from file or fall back to web craling
 func GetModels(forceRefresh bool) (Models, error) {
 	if modelsFileExists() && !forceRefresh {
-		log.Debugf("Reading models from file %s", o.ModelsFile)
 		return getModelsFromModelsFile()
 	}
-	log.Debugf("Fetching models from the internet")
 	models, err := getModelsFromInternet()
 	if len(models) != 0 && err == nil {
 		models.SaveModelsFile()
@@ -75,7 +72,6 @@ func (m Models) SaveModelsFile() error {
 	if err != nil {
 		return err
 	}
-	log.Debugf("Saved models to %s", o.ModelsFile)
 	return nil
 }
 
