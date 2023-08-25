@@ -67,7 +67,7 @@ type Package struct {
 	AutoUpgradeFrom               string `json:"auto_upgrade_from,omitempty"`
 	OfflineInstall                bool   `json:"offline_install,omitempty"`
 	ThirdParty                    bool   `json:"thirdparty,omitempty"`
-	OSMaximumVersion              bool   `json:"os_max_ver,omitempty"`
+	OSMaximumVersion              string `json:"os_max_ver,omitempty"`
 	UseDeprecatedReplaceMechanism bool   `json:"use_deprecated_replace_mechanism,omitempty"`
 	// Package Center metadata
 	Start                bool     `json:"start,omitempty"`

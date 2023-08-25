@@ -24,17 +24,19 @@ var pX8664,
 
 func init() {
 	p1 = &syno.Package{
-		Name:        "package1",
-		DisplayName: "Bleu",
-		Arch:        "noarch",
-		Firmware:    "3.0",
-		Beta:        true,
+		Name:             "package1",
+		DisplayName:      "Bleu",
+		Arch:             "noarch",
+		Firmware:         "3.0",
+		OSMinimumVersion: "6.1-14715",
+		Beta:             true,
 	}
 	p2 = &syno.Package{
-		Name:        "package2",
-		DisplayName: "French Emmental",
-		Arch:        "noarch",
-		Firmware:    "6.1",
+		Name:             "package2",
+		DisplayName:      "French Emmental",
+		Arch:             "noarch",
+		Firmware:         "6.1",
+		OSMinimumVersion: "7.2",
 	}
 	pX8664 = &syno.Package{
 		Name:        "x86-64-package",
@@ -294,6 +296,22 @@ func TestFilterByFirmware(t *testing.T) {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
 	ppf = pp.FilterByFirmware("2.0")
+	if len(ppf) != 0 {
+		t.Errorf("Expected 0 packages to match but got %+v", ppf)
+	}
+}
+
+func TestFilterByOSMinimumVersion(t *testing.T) {
+	pp := syno.Packages{p1, p2}
+	ppf := pp.FilterByOSMinimumVersion("7.2")
+	if len(ppf) != 2 {
+		t.Errorf("Expected 2 packages to match but got %+v", ppf)
+	}
+	ppf = pp.FilterByOSMinimumVersion("7.0")
+	if len(ppf) != 1 {
+		t.Errorf("Expected 1 package to match but got %+v", ppf)
+	}
+	ppf = pp.FilterByOSMinimumVersion("4.0")
 	if len(ppf) != 0 {
 		t.Errorf("Expected 0 packages to match but got %+v", ppf)
 	}

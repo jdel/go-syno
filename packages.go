@@ -32,15 +32,17 @@ func NewPackage(synoPackageName string) (*Package, error) {
 // NewDebugPackage creates a new debug package from the description string
 func NewDebugPackage(description string) *Package {
 	return &Package{
-		Name:        "debug",
-		DisplayName: "GoSSPKS Debug",
-		Arch:        "noarch",
-		Firmware:    "1",
-		Version:     "v1",
-		Beta:        true,
-		Maintainer:  "gosspks",
-		Description: description,
-		Thumbnail:   make([]string, 0),
+		Name:         "debug",
+		DisplayName:  "GoSSPKS Debug",
+		DisplayName7: "GoSSPKS Debug",
+		Arch:         "noarch",
+		Firmware:     "1",
+		Version:      "v1",
+		Beta:         true,
+		Maintainer:   "gosspks",
+		Description:  description,
+		Description7: description,
+		Thumbnail:    make([]string, 0),
 	}
 }
 
@@ -66,11 +68,22 @@ func (p Packages) FilterByArch(query string) Packages {
 	return output
 }
 
-// FilterByFirmware filters synopkgs where Version >= query
+// FilterByOSMaximumVersion filters synopkgs where DSM Version (os_min_ver) >= query
+func (p Packages) FilterByOSMinimumVersion(query string) Packages {
+	output := Packages{}
+	for _, synoPkg := range p {
+		if versions.Compare(synoPkg.OSMinimumVersion, query) <= 0 {
+			output = append(output, synoPkg)
+		}
+	}
+	return output
+}
+
+// FilterByFirmware filters synopkgs where DSM version (firmware) >= query
 func (p Packages) FilterByFirmware(query string) Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
-		if synoPkg.Firmware <= query {
+		if versions.Compare(synoPkg.Firmware, query) <= 0 {
 			output = append(output, synoPkg)
 		}
 	}
