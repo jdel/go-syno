@@ -68,7 +68,7 @@ func (p Packages) FilterByArch(query string) Packages {
 	return output
 }
 
-// FilterByOSMaximumVersion filters synopkgs where DSM Version (os_min_ver) >= query
+// FilterByOSMinimumVersion filters synopkgs where DSM Version (os_min_ver) >= query
 func (p Packages) FilterByOSMinimumVersion(query string) Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
