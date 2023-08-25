@@ -133,6 +133,7 @@ func (p *Package) populateMandatoryFields(infoINI *ini.File) {
 	p.Name = infoINI.Section("").Key("package").Value()
 	p.Version = infoINI.Section("").Key("version").Value()
 	p.Firmware = infoINI.Section("").Key("firmware").Value()
+	p.OSMinimumVersion = infoINI.Section("").Key("os_min_ver").Value()
 	p.Arch = infoINI.Section("").Key("arch").Value()
 	p.Maintainer = infoINI.Section("").Key("maintainer").Value()
 }
@@ -173,6 +174,11 @@ func (p *Package) populateOptionalFields(infoINI *ini.File) {
 	p.AutoUpgradeFrom = infoINI.Section("").Key("auto_upgrade_from").Value()
 	p.OfflineInstall, _ = parseBoolOrYes(infoINI.Section("").Key("offline_install").Value())
 	p.ThirdParty, _ = parseBoolOrYes(infoINI.Section("").Key("thirdparty").Value())
+	p.DSMAppName = infoINI.Section("").Key("dsmappname").Value()
+	p.DSMAppLaunchName = infoINI.Section("").Key("demapplaunchname").Value()
+	p.DSMAppPage = infoINI.Section("").Key("dsmapppage").Value()
+	p.InstallOnColdStorage, _ = parseBoolOrYes(infoINI.Section("").Key("install_on_cold_storage").Value())
+	p.UseDeprecatedReplaceMechanism, _ = parseBoolOrYes(infoINI.Section("").Key("use_deprecated_replace_mechanism").Value())
 }
 
 func (p *Package) populateQFields(infoINI *ini.File) {
@@ -184,7 +190,9 @@ func (p *Package) populateQFields(infoINI *ini.File) {
 
 func (p *Package) populateI18nFields(infoINI *ini.File) {
 	p.DisplayName = infoINI.Section("").Key("displayname").Value()
+	p.DisplayName7 = p.DisplayName
 	p.Description = infoINI.Section("").Key("description").Value()
+	p.Description7 = p.Description
 	p.I18nDisplayNames["enu"] = p.DisplayName
 	p.I18nDescriptions["enu"] = p.Description
 

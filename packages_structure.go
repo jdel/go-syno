@@ -9,57 +9,66 @@ type Package struct {
 	fileName string
 	// Mandatory fields
 	Name             string `json:"package,omitempty"`
-	DisplayName      string `json:"dname,omitempty"`
+	DisplayName      string `json:"dname,omitempty"` // DSM 6 Field, now undocumented
+	DisplayName7     string `json:"displayname,omitempty"`
 	Version          string `json:"version,omitempty"`
 	Firmware         string `json:"firmware,omitempty"` // Replaced by OsMinimumVersion after 6.1-14715
 	OSMinimumVersion string `json:"os_min_ver,omitempty"`
-	Description      string `json:"desc,omitempty"`
+	Description      string `json:"desc,omitempty"` // DSM 6 Field, now undocumented
+	Description7     string `json:"description,omitempty"`
 	Arch             string `json:"arch,omitempty"`
 	Maintainer       string `json:"maintainer,omitempty"`
-	PackageIcon      string `json:"package_icon,omitempty"`
-	PackageIcon256   string `json:"package_icon_256,omitempty"`
+	PackageIcon      string `json:"package_icon,omitempty"`     // DSM 6 Field, now undocumented
+	PackageIcon256   string `json:"package_icon_256,omitempty"` // DSM 6 Field, now undocumented
 	// Optional fields
-	MaintainerURL             string `json:"maintainer_url,omitempty"`
-	Distributor               string `json:"distributor,omitempty"`
-	DistributorURL            string `json:"distributor_url,omitempty"`
-	SupportURL                string `json:"support_url,omitempty"`
-	SupportCenter             string `json:"support_center,omitempty"`
-	Model                     string `json:"model,omitempty"`
-	ExcludeArch               string `json:"exclude_arch,omitempty"` //maybe handle that ?
-	Checksum                  string `json:"checksum,omitempty"`
-	AdminPort                 string `json:"adminport,omitempty"`
-	AdminURL                  string `json:"adminurl,omitempty"`
-	AdminProtocol             string `json:"adminprotocol,omitempty"`
-	DSMUIDir                  string `json:"dsmuidir,omitempty"`
-	DSMAppDir                 string `json:"dsmappdir,omitempty"`
-	Changelog                 string `json:"changelog,omitempty"`
-	CheckPort                 bool   `json:"checkport,omitempty"`
-	Startable                 bool   `json:"startable,omitempty"` // Replaced by ConstrolStop after 6.1-14907
-	ConstrolStop              bool   `json:"ctl_stop,omitempty"`
-	ConstrolUninstall         bool   `json:"ctl_uninstall,omitempty"`
-	PreCheckStartStop         bool   `json:"precheckstartstop,omitempty"`
-	HelpURL                   string `json:"helpurl,omitempty"`
-	Beta                      bool   `json:"beta,omitempty"`
-	ReportURL                 string `json:"report_url,omitempty"`
-	InstallReboot             bool   `json:"install_reboot,omitempty"`
-	InstallDepPackages        string `json:"install_dep_packages,omitempty"`
-	InstallConflictPackages   string `json:"install_conflict_packages,omitempty"`
-	InstallBreakPackages      string `json:"install_break_packages,omitempty"`
-	InstallReplacePackages    string `json:"install_replace_packages,omitempty"`
-	InstUninstRestartServices string `json:"instuninst_restart_services,omitempty"`
-	StartStopRestartServices  string `json:"startstop_restart_services,omitempty"`
-	InstallDepServices        string `json:"install_dep_services,omitempty"`
-	StartDepServices          bool   `json:"start_dep_services,omitempty"`
-	ExtractSize               string `json:"extractsize,omitempty"`
-	SupportConfFolder         bool   `json:"support_conf_folder,omitempty"` // Deprecated after 6.0
-	InstallType               string `json:"install_type,omitempty"`
-	SilentInstall             bool   `json:"silent_install,omitempty"`
-	SilentUpgrade             bool   `json:"silent_upgrade,omitempty"`
-	SilentUninstall           bool   `json:"silent_uninstall,omitempty"`
-	AutoUpgradeFrom           string `json:"auto_upgrade_from,omitempty"`
-	OfflineInstall            bool   `json:"offline_install,omitempty"`
-	ThirdParty                bool   `json:"thirdparty,omitempty"`
-	OSMaximumVersion          bool   `json:"os_max_ver,omitempty"`
+	MaintainerURL                 string `json:"maintainer_url,omitempty"`
+	Distributor                   string `json:"distributor,omitempty"`
+	DistributorURL                string `json:"distributor_url,omitempty"`
+	SupportURL                    string `json:"support_url,omitempty"`
+	SupportCenter                 string `json:"support_center,omitempty"`
+	SupportMove                   string `json:"support_move,omitempty"`
+	Model                         string `json:"model,omitempty"`
+	ExcludeArch                   string `json:"exclude_arch,omitempty"`  //maybe handle that ?
+	ExcludeModel                  string `json:"exclude_model,omitempty"` //maybe handle that ?
+	Checksum                      string `json:"checksum,omitempty"`
+	AdminPort                     string `json:"adminport,omitempty"`
+	AdminURL                      string `json:"adminurl,omitempty"`
+	AdminProtocol                 string `json:"adminprotocol,omitempty"`
+	DSMUIDir                      string `json:"dsmuidir,omitempty"` // DSM 6 Field, now undocumented
+	DSMAppDir                     string `json:"dsmappdir,omitempty"`
+	DSMAppPage                    string `json:"dsmapppage,omitempty"`
+	DSMAppName                    string `json:"dsmappname,omitempty"`
+	DSMAppLaunchName              string `json:"dsmapplaunchname,omitempty"`
+	Changelog                     string `json:"changelog,omitempty"` // DSM 6 Field, now undocumented
+	CheckPort                     bool   `json:"checkport,omitempty"`
+	Startable                     bool   `json:"startable,omitempty"` // Replaced by ConstrolStop after 6.1-14907
+	ConstrolStop                  bool   `json:"ctl_stop,omitempty"`
+	ConstrolUninstall             bool   `json:"ctl_uninstall,omitempty"`
+	PreCheckStartStop             bool   `json:"precheckstartstop,omitempty"`
+	HelpURL                       string `json:"helpurl,omitempty"`
+	Beta                          bool   `json:"beta,omitempty"`
+	ReportURL                     string `json:"report_url,omitempty"`
+	InstallReboot                 bool   `json:"install_reboot,omitempty"`
+	InstallDepPackages            string `json:"install_dep_packages,omitempty"`
+	InstallConflictPackages       string `json:"install_conflict_packages,omitempty"`
+	InstallBreakPackages          string `json:"install_break_packages,omitempty"`
+	InstallOnColdStorage          bool   `json:"install_on_cold_storage,omitempty"`
+	InstallReplacePackages        string `json:"install_replace_packages,omitempty"`
+	InstUninstRestartServices     string `json:"instuninst_restart_services,omitempty"` // DSM 6 Field, now undocumented
+	StartStopRestartServices      string `json:"startstop_restart_services,omitempty"`
+	InstallDepServices            string `json:"install_dep_services,omitempty"`
+	StartDepServices              bool   `json:"start_dep_services,omitempty"`
+	ExtractSize                   string `json:"extractsize,omitempty"`
+	SupportConfFolder             bool   `json:"support_conf_folder,omitempty"` // Deprecated after 6.0
+	InstallType                   string `json:"install_type,omitempty"`
+	SilentInstall                 bool   `json:"silent_install,omitempty"`
+	SilentUpgrade                 bool   `json:"silent_upgrade,omitempty"`
+	SilentUninstall               bool   `json:"silent_uninstall,omitempty"`
+	AutoUpgradeFrom               string `json:"auto_upgrade_from,omitempty"`
+	OfflineInstall                bool   `json:"offline_install,omitempty"`
+	ThirdParty                    bool   `json:"thirdparty,omitempty"`
+	OSMaximumVersion              bool   `json:"os_max_ver,omitempty"`
+	UseDeprecatedReplaceMechanism bool   `json:"use_deprecated_replace_mechanism,omitempty"`
 	// Package Center metadata
 	Start                bool     `json:"start,omitempty"`
 	Price                string   `json:"price,omitempty"`
