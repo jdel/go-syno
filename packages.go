@@ -1,6 +1,7 @@
 package syno // import jdel.org/go-syno/syno
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -11,9 +12,18 @@ import (
 
 // NewPackage creates a new package from the spk file
 func NewPackage(synoPackageName string) (*Package, error) {
+	if synoPackageName == "" {
+		return nil, errors.New("filename cannot be empty")
+	}
+
 	var err error
 	synoPkg := Package{}
-	synoPkg.fileName = synoPackageName
+	synoPkg.FileName = synoPackageName
+
+	if !fileExists(synoPkg.FullPath()) {
+		return nil, errors.New("file does not exist")
+	}
+
 	synoPkg.I18nDisplayNames = make(map[string]string)
 	synoPkg.I18nDescriptions = make(map[string]string)
 	synoPkg.Thumbnail = make([]string, 0)
@@ -32,23 +42,24 @@ func NewPackage(synoPackageName string) (*Package, error) {
 // NewDebugPackage creates a new debug package from the description string
 func NewDebugPackage(description string) *Package {
 	return &Package{
-		Name:         "debug",
-		DisplayName:  "GoSSPKS Debug",
-		DisplayName7: "GoSSPKS Debug",
-		Arch:         "noarch",
-		Firmware:     "1",
-		Version:      "v1",
-		Beta:         true,
-		Maintainer:   "gosspks",
-		Description:  description,
-		Description7: description,
-		Thumbnail:    make([]string, 0),
+		Name:             "debug",
+		DisplayName:      "GoSSPKS Debug",
+		DisplayName7:     "GoSSPKS Debug",
+		Arch:             "noarch",
+		Firmware:         "1",
+		OSMinimumVersion: "6.1-14715",
+		Version:          "v1",
+		Beta:             true,
+		Maintainer:       "gosspks",
+		Description:      description,
+		Description7:     description,
+		Thumbnail:        make([]string, 0),
 	}
 }
 
 // FullPath returns the package full path on FS
 func (p *Package) FullPath() string {
-	return filepath.Join(o.PackagesDir, p.fileName)
+	return filepath.Join(o.PackagesDir, p.FileName)
 }
 
 // ExistsOnDisk returns true if the package file exists on disk

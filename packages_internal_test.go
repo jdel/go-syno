@@ -94,7 +94,7 @@ func cleanupPackage(t *testing.T, p string) {
 func TestPackageFullPath(t *testing.T) {
 	p := skipIfMissingTestPackage(t, "real-package.spk")
 
-	if expectedFullPath := filepath.Join(o.PackagesDir, p.fileName); p.FullPath() != expectedFullPath {
+	if expectedFullPath := filepath.Join(o.PackagesDir, p.FileName); p.FullPath() != expectedFullPath {
 		t.Errorf("Expected FullPath %s but got %s", expectedFullPath, p.FullPath())
 	}
 }
@@ -138,7 +138,7 @@ func TestPackageContainsFiles(t *testing.T) {
 func TestBadPackageContainsFiles(t *testing.T) {
 	cleanupPackage(t, "bad-package.spk")
 	p := Package{}
-	p.fileName = "bad-package.spk"
+	p.FileName = "bad-package.spk"
 	if _, err := p.containsFiles("INFO"); err == nil {
 		t.Error("Expected bad-package.spk to not contain an INFO file")
 	}
@@ -147,7 +147,7 @@ func TestBadPackageContainsFiles(t *testing.T) {
 func TestDeadPackageContainsFiles(t *testing.T) {
 	cleanupPackage(t, "dead-package.spk")
 	p := Package{}
-	p.fileName = "dead-package.spk"
+	p.FileName = "dead-package.spk"
 	if _, err := p.containsFiles("INFO"); err == nil {
 		t.Error("Expected dead-package.spk to not exist on disk")
 	}
@@ -167,7 +167,7 @@ func TestPackageExtractFiles(t *testing.T) {
 		t.Errorf("Expected 1 file but got %d", l)
 	}
 	for _, f := range files {
-		if fullPath := filepath.Join(o.CacheDir, p.fileName, f); !fileExists(fullPath) {
+		if fullPath := filepath.Join(o.CacheDir, p.FileName, f); !fileExists(fullPath) {
 			t.Errorf("Expected file %s to have been written at %s", f, fullPath)
 		}
 	}
@@ -180,7 +180,7 @@ func TestPackageExtractFiles(t *testing.T) {
 		t.Errorf("Expected 2 file but got %d", l)
 	}
 	for _, f := range files {
-		if fullPath := filepath.Join(o.CacheDir, p.fileName, f); !fileExists(fullPath) {
+		if fullPath := filepath.Join(o.CacheDir, p.FileName, f); !fileExists(fullPath) {
 			t.Errorf("Expected file %s to have been written at %s", f, fullPath)
 		}
 	}
@@ -195,7 +195,7 @@ func TestPackageExtractFiles(t *testing.T) {
 		t.Errorf("Expected 1 file but got %d", l)
 	}
 	for _, f := range files {
-		if fullPath := filepath.Join(o.CacheDir, p.fileName, f); !fileExists(fullPath) {
+		if fullPath := filepath.Join(o.CacheDir, p.FileName, f); !fileExists(fullPath) {
 			t.Errorf("Expected file %s to have been written at %s", f, fullPath)
 		}
 	}
@@ -257,7 +257,7 @@ func TestPackageGetMD5ReadError(t *testing.T) {
 func TestPackageGetNewlyExtractedInfo(t *testing.T) {
 	cleanupPackage(t, "real-package.spk")
 	p := Package{}
-	p.fileName = "real-package.spk"
+	p.FileName = "real-package.spk"
 	if i, err := p.getOrExtractInfo(); err != nil {
 		t.Error(err)
 	} else if i != filepath.Join(o.CacheDir, "real-package.spk", "INFO") {
@@ -276,7 +276,7 @@ func TestPackageGetAlreadyExtractedInfo(t *testing.T) {
 		t.Skip("Cannot create INFO file to prepare test")
 	}
 	p := Package{}
-	p.fileName = "real-package.spk"
+	p.FileName = "real-package.spk"
 	if i, err := p.getOrExtractInfo(); err != nil {
 		t.Error(err)
 	} else if i != filepath.Join(o.CacheDir, "real-package.spk", "INFO") {
@@ -292,7 +292,7 @@ func TestPackageGetAlreadyExtractedInfo(t *testing.T) {
 func TestBadPackageGetInfo(t *testing.T) {
 	cleanupPackage(t, "bad-package.spk")
 	p := Package{}
-	p.fileName = "bad-package.spk"
+	p.FileName = "bad-package.spk"
 	if i, err := p.getOrExtractInfo(); err == nil {
 		t.Error(err)
 	} else if i != "" {
@@ -305,7 +305,7 @@ func TestBadPackageGetInfo(t *testing.T) {
 func TestPackageExtractImages(t *testing.T) {
 	cleanupPackage(t, "real-package.spk")
 	p := Package{}
-	p.fileName = "real-package.spk"
+	p.FileName = "real-package.spk"
 	i, err := p.extractImages()
 	if err != nil {
 		t.Error(err)
@@ -323,7 +323,7 @@ func TestPackageExtractImages(t *testing.T) {
 
 func TestPackageExtractImagesDeadPackage(t *testing.T) {
 	p := Package{}
-	p.fileName = "dead-package.spk"
+	p.FileName = "dead-package.spk"
 	if _, err := p.extractImages(); err == nil {
 		t.Error("Expected a read error")
 	}
@@ -338,10 +338,10 @@ func TestPackageGetImages(t *testing.T) {
 	} else if len(i) != 2 {
 		t.Errorf("Expected 2 image files extracted but got %d", len(i))
 	}
-	if i1 := filepath.Join(o.CacheDir, p.fileName, i[0]); !fileExists(i1) {
+	if i1 := filepath.Join(o.CacheDir, p.FileName, i[0]); !fileExists(i1) {
 		t.Errorf("Cannot find %s", i1)
 	}
-	if i2 := filepath.Join(o.CacheDir, p.fileName, i[1]); !fileExists(i2) {
+	if i2 := filepath.Join(o.CacheDir, p.FileName, i[1]); !fileExists(i2) {
 		t.Errorf("Cannot find %s", i2)
 	}
 }

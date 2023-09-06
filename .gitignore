@@ -26,8 +26,8 @@ _testmain.go
 *.prof
 
 # go-syno diretories
-vendor
 c.out
 test-results-*
 html
 vangen.json
+examples/cache

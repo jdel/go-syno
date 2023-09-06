@@ -2,15 +2,25 @@ package syno // import jdel.org/go-syno/syno
 
 import (
 	"path/filepath"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 // Options holds external context
 type Options struct {
-	PackagesDir string
-	CacheDir    string
-	ModelsFile  string
-	Language    string
-	MD5         bool
+	PackagesDir string `json:"packages_dir,omitempty" yaml:"packages_dir,omitempty"`
+	CacheDir    string `json:"cache_dir,omitempty" yaml:"cache_dir,omitempty"`
+	ModelsFile  string `json:"models_file,omitempty" yaml:"models_file,omitempty"`
+	Language    string `json:"language,omitempty" yaml:"language,omitempty"`
+	MD5         bool   `json:"md5,omitempty" yaml:"md5,omitempty"`
+}
+
+func (o *Options) String() string {
+	yamlOptions, err := yaml.Marshal(o)
+	if err != nil {
+		return ""
+	}
+	return string(yamlOptions)
 }
 
 var o Options
