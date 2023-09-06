@@ -24,17 +24,19 @@ var pX8664,
 
 func init() {
 	p1 = &syno.Package{
-		Name:        "package1",
-		DisplayName: "Bleu",
-		Arch:        "noarch",
-		Firmware:    "3.0",
-		Beta:        true,
+		Name:             "package1",
+		DisplayName:      "Bleu",
+		Arch:             "noarch",
+		Firmware:         "3.0",
+		OSMinimumVersion: "6.1-14715",
+		Beta:             true,
 	}
 	p2 = &syno.Package{
-		Name:        "package2",
-		DisplayName: "French Emmental",
-		Arch:        "noarch",
-		Firmware:    "6.1",
+		Name:             "package2",
+		DisplayName:      "French Emmental",
+		Arch:             "noarch",
+		Firmware:         "6.1",
+		OSMinimumVersion: "7.2",
 	}
 	pX8664 = &syno.Package{
 		Name:        "x86-64-package",
@@ -123,10 +125,36 @@ func TestRealPackageI18n(t *testing.T) {
 	cleanupPackage(t, "real-package.spk")
 	var p *syno.Package
 	var err error
+
 	previousLanguage := o.Language
 	defer func() {
 		o.Language = previousLanguage
 	}()
+
+	// Test first with default enu language
+	if p, err = syno.NewPackage("real-package-i18n.spk"); err != nil {
+		t.Error("Package real-package-i18n.spk should exist in tests/packages")
+	}
+	if p.DisplayName != "Real Package" {
+		t.Errorf("Display Name should be Real Package but got %s", p.DisplayName)
+	}
+	if p.Description != "A Real Package" {
+		t.Errorf("Description should be A Real Package but got %s", p.Description)
+	}
+	if p.I18nDisplayNames["enu"] != "Real Package" {
+		t.Errorf("Display Name ENU should be Real Package but got %s", p.I18nDisplayNames["enu"])
+	}
+	if p.I18nDescriptions["enu"] != "A Real Package" {
+		t.Errorf("Description ENU should be A Real Package but got %s", p.I18nDescriptions["enu"])
+	}
+	if p.I18nDisplayNames["ita"] != "Real Package (ITA)" {
+		t.Errorf("Display Name ITA should be Real Package (ITA) but got %s", p.I18nDisplayNames["ita"])
+	}
+	if p.I18nDescriptions["ita"] != "A Real Package (ITA)" {
+		t.Errorf("Description ITA should be A Real Package (ITA) but got %s", p.I18nDescriptions["ita"])
+	}
+
+	// Test with default italian
 	o.Language = "ita"
 	if p, err = syno.NewPackage("real-package-i18n.spk"); err != nil {
 		t.Error("Package real-package-i18n.spk should exist in tests/packages")
@@ -136,6 +164,18 @@ func TestRealPackageI18n(t *testing.T) {
 	}
 	if p.Description != "A Real Package (ITA)" {
 		t.Errorf("Description should be A Real Package (ITA) but got %s", p.Description)
+	}
+	if p.I18nDisplayNames["enu"] != "Real Package" {
+		t.Errorf("Display Name ENU should be Real Package but got %s", p.I18nDisplayNames["enu"])
+	}
+	if p.I18nDescriptions["enu"] != "A Real Package" {
+		t.Errorf("Description ENU should be A Real Package but got %s", p.I18nDescriptions["enu"])
+	}
+	if p.I18nDisplayNames["ita"] != "Real Package (ITA)" {
+		t.Errorf("Display Name ITA should be Real Package (ITA) but got %s", p.I18nDisplayNames["ita"])
+	}
+	if p.I18nDescriptions["ita"] != "A Real Package (ITA)" {
+		t.Errorf("Description ITA should be A Real Package (ITA) but got %s", p.I18nDescriptions["ita"])
 	}
 }
 
@@ -256,6 +296,22 @@ func TestFilterByFirmware(t *testing.T) {
 		t.Errorf("Expected 1 packages to match but got %+v", ppf)
 	}
 	ppf = pp.FilterByFirmware("2.0")
+	if len(ppf) != 0 {
+		t.Errorf("Expected 0 packages to match but got %+v", ppf)
+	}
+}
+
+func TestFilterByOSMinimumVersion(t *testing.T) {
+	pp := syno.Packages{p1, p2}
+	ppf := pp.FilterByOSMinimumVersion("7.2")
+	if len(ppf) != 2 {
+		t.Errorf("Expected 2 packages to match but got %+v", ppf)
+	}
+	ppf = pp.FilterByOSMinimumVersion("7.0")
+	if len(ppf) != 1 {
+		t.Errorf("Expected 1 package to match but got %+v", ppf)
+	}
+	ppf = pp.FilterByOSMinimumVersion("4.0")
 	if len(ppf) != 0 {
 		t.Errorf("Expected 0 packages to match but got %+v", ppf)
 	}

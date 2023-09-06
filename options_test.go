@@ -1,9 +1,6 @@
 package syno_test // import jdel.org/go-syno/syno_test
 
 import (
-	"bytes"
-	"log"
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -26,20 +23,6 @@ func TestOptionsGetOptions(t *testing.T) {
 	}
 	if !newOptions.MD5 {
 		t.Errorf("Expected MD5 to be %t but got %t", true, newOptions.MD5)
-	}
-}
-
-func TestOptionsLogLevel(t *testing.T) {
-	cleanupModels(t)
-	var b bytes.Buffer
-	syno.SetLogLevel(syno.LogDebugLevel)
-	syno.SetLogOutput(&b)
-	defer func() {
-		log.SetOutput(os.Stderr)
-	}()
-	syno.GetModels(false)
-	if len(b.String()) == 0 {
-		t.Errorf("Expecting loglevel Debug to write to buffer but it didn't")
 	}
 }
 

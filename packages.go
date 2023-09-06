@@ -1,6 +1,7 @@
 package syno // import jdel.org/go-syno/syno
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -11,9 +12,20 @@ import (
 
 // NewPackage creates a new package from the spk file
 func NewPackage(synoPackageName string) (*Package, error) {
+	if synoPackageName == "" {
+		return nil, errors.New("filename cannot be empty")
+	}
+
 	var err error
 	synoPkg := Package{}
-	synoPkg.fileName = synoPackageName
+	synoPkg.FileName = synoPackageName
+
+	if !fileExists(synoPkg.FullPath()) {
+		return nil, errors.New("file does not exist")
+	}
+
+	synoPkg.I18nDisplayNames = make(map[string]string)
+	synoPkg.I18nDescriptions = make(map[string]string)
 	synoPkg.Thumbnail = make([]string, 0)
 	synoPkg.ThumbnailRetina = make([]string, 0)
 	synoPkg.Snapshot = make([]string, 0)
@@ -30,21 +42,24 @@ func NewPackage(synoPackageName string) (*Package, error) {
 // NewDebugPackage creates a new debug package from the description string
 func NewDebugPackage(description string) *Package {
 	return &Package{
-		Name:        "debug",
-		DisplayName: "GoSSPKS Debug",
-		Arch:        "noarch",
-		Firmware:    "1",
-		Version:     "v1",
-		Beta:        true,
-		Maintainer:  "gosspks",
-		Description: description,
-		Thumbnail:   make([]string, 0),
+		Name:             "debug",
+		DisplayName:      "GoSSPKS Debug",
+		DisplayName7:     "GoSSPKS Debug",
+		Arch:             "noarch",
+		Firmware:         "1",
+		OSMinimumVersion: "6.1-14715",
+		Version:          "v1",
+		Beta:             true,
+		Maintainer:       "gosspks",
+		Description:      description,
+		Description7:     description,
+		Thumbnail:        make([]string, 0),
 	}
 }
 
 // FullPath returns the package full path on FS
 func (p *Package) FullPath() string {
-	return filepath.Join(o.PackagesDir, p.fileName)
+	return filepath.Join(o.PackagesDir, p.FileName)
 }
 
 // ExistsOnDisk returns true if the package file exists on disk
@@ -64,11 +79,22 @@ func (p Packages) FilterByArch(query string) Packages {
 	return output
 }
 
-// FilterByFirmware filters synopkgs where Version >= query
+// FilterByOSMinimumVersion filters synopkgs where DSM Version (os_min_ver) >= query
+func (p Packages) FilterByOSMinimumVersion(query string) Packages {
+	output := Packages{}
+	for _, synoPkg := range p {
+		if versions.Compare(synoPkg.OSMinimumVersion, query) <= 0 {
+			output = append(output, synoPkg)
+		}
+	}
+	return output
+}
+
+// FilterByFirmware filters synopkgs where DSM version (firmware) >= query
 func (p Packages) FilterByFirmware(query string) Packages {
 	output := Packages{}
 	for _, synoPkg := range p {
-		if synoPkg.Firmware <= query {
+		if versions.Compare(synoPkg.Firmware, query) <= 0 {
 			output = append(output, synoPkg)
 		}
 	}
@@ -131,6 +157,7 @@ func (p *Package) populateMandatoryFields(infoINI *ini.File) {
 	p.Name = infoINI.Section("").Key("package").Value()
 	p.Version = infoINI.Section("").Key("version").Value()
 	p.Firmware = infoINI.Section("").Key("firmware").Value()
+	p.OSMinimumVersion = infoINI.Section("").Key("os_min_ver").Value()
 	p.Arch = infoINI.Section("").Key("arch").Value()
 	p.Maintainer = infoINI.Section("").Key("maintainer").Value()
 }
@@ -171,6 +198,11 @@ func (p *Package) populateOptionalFields(infoINI *ini.File) {
 	p.AutoUpgradeFrom = infoINI.Section("").Key("auto_upgrade_from").Value()
 	p.OfflineInstall, _ = parseBoolOrYes(infoINI.Section("").Key("offline_install").Value())
 	p.ThirdParty, _ = parseBoolOrYes(infoINI.Section("").Key("thirdparty").Value())
+	p.DSMAppName = infoINI.Section("").Key("dsmappname").Value()
+	p.DSMAppLaunchName = infoINI.Section("").Key("demapplaunchname").Value()
+	p.DSMAppPage = infoINI.Section("").Key("dsmapppage").Value()
+	p.InstallOnColdStorage, _ = parseBoolOrYes(infoINI.Section("").Key("install_on_cold_storage").Value())
+	p.UseDeprecatedReplaceMechanism, _ = parseBoolOrYes(infoINI.Section("").Key("use_deprecated_replace_mechanism").Value())
 }
 
 func (p *Package) populateQFields(infoINI *ini.File) {
@@ -182,13 +214,30 @@ func (p *Package) populateQFields(infoINI *ini.File) {
 
 func (p *Package) populateI18nFields(infoINI *ini.File) {
 	p.DisplayName = infoINI.Section("").Key("displayname").Value()
+	p.DisplayName7 = p.DisplayName
+	p.Description = infoINI.Section("").Key("description").Value()
+	p.Description7 = p.Description
+	p.I18nDisplayNames["enu"] = p.DisplayName
+	p.I18nDescriptions["enu"] = p.Description
+
 	if value := infoINI.Section("").Key(fmt.Sprintf("displayname_%s", o.Language)).Value(); value != "" {
 		p.DisplayName = value
 	}
-
-	p.Description = infoINI.Section("").Key("description").Value()
 	if value := infoINI.Section("").Key(fmt.Sprintf("description_%s", o.Language)).Value(); value != "" {
 		p.Description = value
+	}
+
+	for _, k := range infoINI.Section("").KeyStrings() {
+		if len(k) == 15 {
+			if value := infoINI.Section("").Key(k).Value(); value != "" {
+				if k[0:12] == "displayname_" {
+					p.I18nDisplayNames[k[12:15]] = infoINI.Section("").Key(k).Value()
+				}
+				if k[0:12] == "description_" {
+					p.I18nDescriptions[k[12:15]] = infoINI.Section("").Key(k).Value()
+				}
+			}
+		}
 	}
 }
 

@@ -21,11 +21,11 @@ jq -rn \
     }'
 } > vangen.json
 
-git clone https://$GITHUB_TOKEN@github.com/jdel/jdel.github.io.git html
+git clone "https://${VANGEN_TOKEN}@github.com/jdel/jdel.github.io.git" html
 vangen -config vangen.json -out html
 cd html
+git config user.name "github-actions"
+git config user.email "github-actions@users.noreply.github.com"
 git add "$prefix"
 git commit -m "Vangen update for $domain/$prefix" || true
 git push
-cd ..
-rm -rf html vangen.json

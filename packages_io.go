@@ -19,7 +19,7 @@ func (p *Package) containsFiles(fileNamePattern string) (bool, error) {
 	var err error
 	var spkFile *os.File
 
-	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.fileName))
+	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.FileName))
 	if err != nil {
 		return false, err
 	}
@@ -47,7 +47,7 @@ func (p *Package) extractFiles(fileNamePattern string) ([]string, error) {
 	var spkFile *os.File
 	var extractedFiles []string
 
-	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.fileName))
+	spkFile, err = os.Open(filepath.Join(o.PackagesDir, p.FileName))
 	if err != nil {
 		return extractedFiles, err
 	}
@@ -66,7 +66,7 @@ func (p *Package) extractFiles(fileNamePattern string) ([]string, error) {
 		if match, _ := regexp.MatchString(fileNamePattern, fileHeader.Name); match && fileHeader.Typeflag == tar.TypeReg {
 			fileName := trimDotSlash(fileHeader.Name)
 			extractedFiles = append(extractedFiles, fileName)
-			outputPath := filepath.Join(o.CacheDir, p.fileName, fileName)
+			outputPath := filepath.Join(o.CacheDir, p.FileName, fileName)
 			err = writeToFile(tarReader, outputPath, 0755)
 		}
 	}
@@ -77,7 +77,7 @@ func (p *Package) getSize() (string, error) {
 	var size int
 	var err error
 
-	spkFileInfo, err := os.Stat(filepath.Join(o.PackagesDir, p.fileName))
+	spkFileInfo, err := os.Stat(filepath.Join(o.PackagesDir, p.FileName))
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +91,7 @@ func (p *Package) getMD5() (string, error) {
 	var calculatedMD5 string
 	var err error
 
-	spkFile, err := os.Open(filepath.Join(o.PackagesDir, p.fileName))
+	spkFile, err := os.Open(filepath.Join(o.PackagesDir, p.FileName))
 	if err != nil {
 		return "", err
 	}
@@ -109,10 +109,11 @@ func (p *Package) getMD5() (string, error) {
 func (p *Package) extractInfo() error {
 	extractedFiles, err := p.extractFiles("INFO")
 	if err != nil || len(extractedFiles) == 0 {
-		if err := os.Rename(filepath.Join(o.PackagesDir, p.fileName), fmt.Sprintf("%s.ignored", filepath.Join(o.PackagesDir, p.fileName))); err != nil {
+		if err := os.Rename(
+			filepath.Join(o.PackagesDir, p.FileName), fmt.Sprintf("%s.ignored", filepath.Join(o.PackagesDir, p.FileName))); err != nil {
 			return err
 		}
-		return fmt.Errorf("quatantined %s: No INFO or not a tar file", p.fileName)
+		return fmt.Errorf("quatantined %s: No INFO or not a tar file", p.FileName)
 	}
 	return nil
 }
@@ -120,7 +121,7 @@ func (p *Package) extractInfo() error {
 // Returns the info file path and an eventual error
 func (p *Package) getOrExtractInfo() (string, error) {
 	var err error
-	infoINIPath := filepath.Join(o.CacheDir, p.fileName, "INFO")
+	infoINIPath := filepath.Join(o.CacheDir, p.FileName, "INFO")
 	if _, err = os.Stat(infoINIPath); err != nil {
 		if err = p.extractInfo(); err != nil {
 			return "", err
@@ -132,11 +133,11 @@ func (p *Package) getOrExtractInfo() (string, error) {
 func (p *Package) parseInfo() (*ini.File, error) {
 	spkinfoFilePath, err := p.getOrExtractInfo()
 	if err != nil {
-		return nil, fmt.Errorf("cannot extract INFO for %s: %s", p.fileName, err)
+		return nil, fmt.Errorf("cannot extract INFO for %s: %s", p.FileName, err)
 	}
 	infoINI, err := ini.InsensitiveLoad(spkinfoFilePath)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read INFO for %s: %s", p.fileName, err)
+		return nil, fmt.Errorf("cannot read INFO for %s: %s", p.FileName, err)
 	}
 	infoINI.BlockMode = false
 	return infoINI, nil
@@ -156,7 +157,7 @@ func (p *Package) getImages() ([]string, error) {
 	var files []os.DirEntry
 	var images []string
 
-	files, err = os.ReadDir(filepath.Join(o.CacheDir, p.fileName))
+	files, err = os.ReadDir(filepath.Join(o.CacheDir, p.FileName))
 	if err != nil {
 		return nil, err
 	}

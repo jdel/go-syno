@@ -8,23 +8,38 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/robertkrimen/otto"
-	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v2"
 )
 
 // Model represents a Synology model
 type Model struct {
-	Name    string `json:"name,omitempty"`
-	CPU     string `json:"cpu,omitempty"`
-	Cores   string `json:"cores,omitempty"`
-	Threads string `json:"threads,omitempty"`
-	FPU     string `json:"fpu,omitempty"`
-	Arch    string `json:"arch,omitempty"`
-	RAM     string `json:"ram,omitempty"`
+	Name    string `json:"name,omitempty" yaml:"name,omitempty"`
+	CPU     string `json:"cpu,omitempty" yaml:"cpu,omitempty"`
+	Cores   string `json:"cores,omitempty" yaml:"cores,omitempty"`
+	Threads string `json:"threads,omitempty" yaml:"threads,omitempty"`
+	FPU     string `json:"fpu,omitempty" yaml:"fpu,omitempty"`
+	Arch    string `json:"arch,omitempty" yaml:"arch,omitempty"`
+	RAM     string `json:"ram,omitempty" yaml:"ram,omitempty"`
+}
+
+func (m *Model) String() string {
+	yamlModel, err := yaml.Marshal(m)
+	if err != nil {
+		return ""
+	}
+	return string(yamlModel)
 }
 
 // Models is a slice of Model
 type Models []*Model
+
+func (m *Models) String() string {
+	yamlModels, err := yaml.Marshal(m)
+	if err != nil {
+		return ""
+	}
+	return string(yamlModels)
+}
 
 // Families contains families - arch mappings
 var Families map[string][]string
@@ -43,10 +58,8 @@ func init() {
 // GetModels returns Synology models from file or fall back to web craling
 func GetModels(forceRefresh bool) (Models, error) {
 	if modelsFileExists() && !forceRefresh {
-		log.Debugf("Reading models from file %s", o.ModelsFile)
 		return getModelsFromModelsFile()
 	}
-	log.Debugf("Fetching models from the internet")
 	models, err := getModelsFromInternet()
 	if len(models) != 0 && err == nil {
 		models.SaveModelsFile()
@@ -67,15 +80,10 @@ func (m Models) FilterByName(query string) Models {
 
 // SaveModelsFile saves the model file to o.ModelsFile
 func (m Models) SaveModelsFile() error {
-	yamlModels, err := yaml.Marshal(m)
+	err := os.WriteFile(o.ModelsFile, []byte(m.String()), 0755)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(o.ModelsFile, yamlModels, 0755)
-	if err != nil {
-		return err
-	}
-	log.Debugf("Saved models to %s", o.ModelsFile)
 	return nil
 }
 

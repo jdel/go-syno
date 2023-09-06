@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	syno "jdel.org/go-syno"
-	log "github.com/sirupsen/logrus"
 )
 
 var defaultModels syno.Models
@@ -43,7 +42,6 @@ func fileExists(path string) bool {
 
 func TestModelsFileExists(t *testing.T) {
 	cleanupModels(t)
-	syno.SetLogLevel(log.ErrorLevel)
 	if fileExists(o.ModelsFile) {
 		t.Errorf("Expected file %s to not exist on disk", o.ModelsFile)
 	}
